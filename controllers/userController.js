@@ -27,8 +27,14 @@ async function signIn (req, res, next) {
       return res.status(401).json(respData)
     }
 
-    const user = prepareUserDataToReturn(mainUserData)
-    const token = getAccessToken(user, mainUserData.password)
+    const user = {
+      first_name: mainUserData.first_name,
+      last_name: mainUserData.last_name,
+      email: mainUserData.email,
+    }
+    const token = jwt.sign(user, config.jwt.token_secret, {
+      expiresIn: config.jwt.token_life
+    })
 
     removePasswordFromUserObject(user)
 
@@ -63,16 +69,6 @@ async function register (req, res, next) {
   } catch (err) {
     next(err)
   }
-}
-
-function getTokenSecret (password) {
-  return config.jwt.token_secret + password
-}
-
-function getAccessToken (user, password) {
-  return jwt.sign(user, getTokenSecret(password), {
-    expiresIn: config.jwt.token_life
-  })
 }
 
 function removePasswordFromUserObject(user) {
