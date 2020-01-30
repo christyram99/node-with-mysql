@@ -1,2 +1,2 @@
-# Donee me app
+# Sample node app with mysql database
 
