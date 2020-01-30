@@ -2,20 +2,28 @@ const UserDataServiceProvider = require('../services/database/userDataServicePro
 const config = require('./../config/app')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
-const saltRounds = 12
 
 async function signIn (req, res, next) {
   try {
-    const saltedPassword = await bcrypt.hash(req.body.password, saltRounds)
-    const [ rows ] = await UserDataServiceProvider.login(req.body.email, saltedPassword)
+    const [ rows ] = await UserDataServiceProvider.fetchUserByEmail(req.body.email)
     const mainUserData = rows[0]
-
+    
     if (!mainUserData) {
       const respData = {
         success: false,
         message: 'Invalid credentials!'
       }
+      
+      return res.status(401).json(respData)
+    }
 
+    const passwordMatch = await bcrypt.compare(req.body.password, mainUserData.password)
+    if (!passwordMatch) {
+      const respData = {
+        success: false,
+        message: 'Invalid credentials!'
+      }
+      
       return res.status(401).json(respData)
     }
 

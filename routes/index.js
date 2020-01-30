@@ -1,6 +1,8 @@
 const express = require('express')
-const users = require('./users')
 const router = express.Router()
+
+const users = require('./users')
+const todo = require('./todo')
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -8,4 +10,6 @@ router.get('/', function (req, res, next) {
 })
 
 router.use(users)
+router.use(todo)
+
 module.exports = router

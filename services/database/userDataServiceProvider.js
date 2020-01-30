@@ -11,11 +11,6 @@ async function register (userData) {
   return Database.query(sql)
 }
 
-function login (email, password) {
-  const sql = `SELECT * FROM users where email = '${email}' AND password = '${password}'`
-  return Database.query(sql)
-}
-
 function fetchUserByEmail (email) {
   const sql = `SELECT * FROM users where email = '${email}'`
   return Database.query(sql)
@@ -23,6 +18,5 @@ function fetchUserByEmail (email) {
 
 module.exports = {
   register,
-  login,
   fetchUserByEmail,
 }
