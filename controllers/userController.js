@@ -7,9 +7,7 @@ const bcrypt = require('bcrypt')
 async function signIn (req, res, next) {
   try {
     const [ rows ] = await UserDataServiceProvider.login(req.body.email)
-    console.log('TCL: signIn -> rows, fields', rows)
     const mainUserData = rows[0]
-    console.log('TCL: signIn -> mainUserData', mainUserData)
 
     if (!mainUserData) {
       const respData = {
