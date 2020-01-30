@@ -30,7 +30,7 @@ async function validateAccessToken (req, res, next) {
       return res.status(401).json(respData)
     }
 
-    const tokenSecret = config.jwt.token_secret + user.password
+    const tokenSecret = config.jwt.token_secret
 
     try {
       // Verify JWT
