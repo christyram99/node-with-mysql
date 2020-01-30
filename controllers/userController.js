@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt')
 
 async function signIn (req, res, next) {
   try {
-    const [ rows ] = await UserDataServiceProvider.fetchUserByEmail(req.body.email)
+    const [ rows ] = await UserDataServiceProvider.login(req.body.email, req.body.password)
     const mainUserData = rows[0]
     
     if (!mainUserData) {
@@ -17,24 +17,20 @@ async function signIn (req, res, next) {
       return res.status(401).json(respData)
     }
 
-    const passwordMatch = await bcrypt.compare(req.body.password, mainUserData.password)
-    if (!passwordMatch) {
-      const respData = {
-        success: false,
-        message: 'Invalid credentials!'
-      }
-      
-      return res.status(401).json(respData)
-    }
-
-    const user = {
+    /* Generating access token */
+    const token = jwt.sign({
       first_name: mainUserData.first_name,
       last_name: mainUserData.last_name,
       email: mainUserData.email,
-    }
-    const token = jwt.sign(user, config.jwt.token_secret, {
+    }, config.jwt.token_secret, {
       expiresIn: config.jwt.token_life
     })
+
+    const user = {
+      email: mainUserData.email,
+      first_name: mainUserData.first_name,
+      last_name: mainUserData.last_name,
+    }
 
     removePasswordFromUserObject(user)
 
